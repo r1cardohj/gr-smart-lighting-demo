@@ -1,11 +1,11 @@
-package org.example.models;
+package org.grsl.models;
 
 import lombok.Data;
-
-import java.util.List;
+import org.springframework.data.annotation.Id;
 
 @Data
-public class DeviceMaintenanceProvider {
+public class DeviceMaintenanceProvider implements BaseModel{
+    @Id
     private long id;
     private String providerCode;
     private String providerName;

@@ -1,4 +1,4 @@
-package org.example.services;
+package org.grsl.services;
 
 import org.springframework.stereotype.Service;
 

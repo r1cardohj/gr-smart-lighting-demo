@@ -1,4 +1,4 @@
-package org.example.models;
+package org.grsl.models;
 
 public enum LightingType {
     Single, Double, Multi

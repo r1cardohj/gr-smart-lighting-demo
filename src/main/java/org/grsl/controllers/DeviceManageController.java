@@ -4,12 +4,15 @@ import org.grsl.models.Device;
 import org.grsl.repositories.DeviceRepository;
 import org.grsl.schema.device.DeviceCreateRequest;
 import org.grsl.schema.device.DeviceIDOnlyRequest;
-import org.grsl.schema.device.DeviceResponse;
+import org.grsl.schema.http.CommonDataResponse;
 import org.grsl.schema.http.BaseHttpResponse;
 import org.grsl.schema.http.Code200Response;
 import org.grsl.schema.http.Code400Response;
 import org.grsl.services.DeviceManageService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -21,20 +24,21 @@ public class DeviceManageController {
         this.deviceManageService = deviceManageService;
     }
 
-    /*@GetMapping("/")
-    public Iterable<Device> getAllDevices(@RequestParam Integer page,
-                                          @RequestParam Integer perPage) {
-
-    }*/
+    @GetMapping("/")
+    public BaseHttpResponse getAllDevices(@RequestParam(required = false) Integer page,
+                                          @RequestParam(required = false) Integer perPage) {
+        List<Device> devices = this.deviceManageService.findDeviceByPage(page, perPage);
+        return new CommonDataResponse<>(devices);
+    }
 
 
     @GetMapping("/{id}")
     public BaseHttpResponse getDeviceById(@PathVariable long id) {
         try {
             Device device = this.deviceManageService.findDeviceById(id);
-            return new DeviceResponse(device);
+            return new CommonDataResponse<>(device);
         } catch (DeviceRepository.DeviceNotFoundException e) {
-            return new DeviceResponse(null);
+            return new CommonDataResponse<>(null);
         }
     }
 

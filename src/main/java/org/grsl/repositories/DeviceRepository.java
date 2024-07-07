@@ -3,12 +3,13 @@ package org.grsl.repositories;
 import org.grsl.models.Device;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 
 public interface DeviceRepository extends CrudRepository<Device, Long> {
-    @Query("SELECT * FROM device LIMIT :page,:perPage")
-    public List<Device> findAllDeviceByPage(int page, int perPage);
+    @Query("SELECT * FROM device LIMIT :offset,:limit")
+    public List<Device> findAllDeviceByPage(int limit, int offset);
 
 
     /*

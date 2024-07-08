@@ -3,18 +3,23 @@ package org.grsl.schema.device;
 import lombok.Data;
 import org.grsl.models.Device;
 
+import javax.validation.constraints.*;
 import java.util.Date;
 
 @Data
 public class DeviceCreateRequest {
+    @NotBlank
     private String name;
+    @NotBlank
     private String deviceCode;
     private String specifications;
     private String position;
     private String lightingType;
     private String serialNumber;
     private String chargeBy;
+    @Past
     private Date exFactoryDate;
+    @Future
     private Date expiredDate;
 
     public Device toDevice() {

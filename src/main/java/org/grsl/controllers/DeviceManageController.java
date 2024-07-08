@@ -9,6 +9,7 @@ import org.grsl.schema.http.BaseHttpResponse;
 import org.grsl.schema.http.Code200Response;
 import org.grsl.schema.http.Code400Response;
 import org.grsl.services.DeviceManageService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,7 +44,7 @@ public class DeviceManageController {
     }
 
     @PostMapping("/create")
-    public BaseHttpResponse createDevice(@RequestBody DeviceCreateRequest request) {
+    public BaseHttpResponse createDevice(@RequestBody @Validated DeviceCreateRequest request) {
         try {
             this.deviceManageService.createDevice(request.toDevice());
         } catch (DeviceRepository.DeviceExistException e) {
@@ -63,7 +64,7 @@ public class DeviceManageController {
     }
 
     @PostMapping("/delete")
-    public BaseHttpResponse deleteDevice(@RequestBody DeviceIDOnlyRequest request) {
+    public BaseHttpResponse deleteDevice(@RequestBody @Validated DeviceIDOnlyRequest request) {
         try {
             this.deviceManageService.deleteDeviceById(request.getId());
         } catch (DeviceRepository.DeviceNotFoundException e) {

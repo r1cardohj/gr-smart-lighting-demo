@@ -1,13 +1,13 @@
 package org.grsl.utils;
 
 
-public class Pagger {
+public class Pager {
     private Integer limit;
     private Integer offset;
     static Integer DEFAULT_PAGE = 1;
     static Integer DEFAULT_PER_PAGE = 10;
 
-    public Pagger(Integer page, Integer perPage) {
+    public Pager(Integer page, Integer perPage) {
         Integer safePage = toSafePage(page);
         Integer safePerPage = toSafePerPage(perPage);
         this.limit = safePerPage;

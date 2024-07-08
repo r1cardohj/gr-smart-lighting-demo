@@ -2,7 +2,7 @@ package org.grsl.services;
 
 import org.grsl.models.Device;
 import org.grsl.repositories.DeviceRepository;
-import org.grsl.utils.Pagger;
+import org.grsl.utils.Pager;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class DeviceManageService {
     }
 
     public List<Device> findDeviceByPage(Integer page, Integer perPage) {
-        Pagger pagger = new Pagger(page, perPage);
+        Pager pagger = new Pager(page, perPage);
         return this.deviceRespository.findAllDeviceByPage(pagger.getLimit(), pagger.getOffset());
     }
 

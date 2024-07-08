@@ -2,8 +2,8 @@ package org.grsl.utils;
 
 
 public class Pager {
-    private Integer limit;
-    private Integer offset;
+    private final Integer limit;
+    private final Integer offset;
     static Integer DEFAULT_PAGE = 1;
     static Integer DEFAULT_PER_PAGE = 10;
 

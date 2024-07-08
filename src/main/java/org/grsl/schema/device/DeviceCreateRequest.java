@@ -28,6 +28,7 @@ public class DeviceCreateRequest {
         device.setDeviceCode(deviceCode);
         device.setSpecifications(specifications);
         device.setPosition(position);
+        device.setIsOnline(false);
         device.setLightingType(lightingType);
         device.setSerialNumber(serialNumber);
         device.setChargeBy(chargeBy);

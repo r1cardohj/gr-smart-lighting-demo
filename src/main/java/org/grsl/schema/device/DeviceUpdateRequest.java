@@ -1,17 +1,16 @@
 package org.grsl.schema.device;
 
 import lombok.Data;
-import org.grsl.models.BaseModel;
-import org.springframework.data.annotation.Id;
+import org.grsl.models.Device;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.*;
 import java.util.Date;
 
 @Data
 public class DeviceUpdateRequest {
 
-    @NotBlank
-    private long id;
+    @Pattern(regexp = "[0-9]*", message = "id must be number")
+    private String id;
     private String name;
     private String deviceCode;
     private String specifications; //规格型号
@@ -21,6 +20,24 @@ public class DeviceUpdateRequest {
     private Boolean isOnline;
     private String serialNumber; //序列号
     private String chargeBy; //负责人
+    @Past
     private Date exFactoryDate; //出厂日期
+    @Future
     private Date expiredDate; //报废日期
+
+    public Device toDevice() {
+        Device device = new Device();
+        device.setId(Long.parseLong(id));
+        device.setName(name);
+        device.setDeviceCode(deviceCode);
+        device.setSpecifications(specifications);
+        device.setIsOnline(isOnline);
+        device.setPosition(position);
+        device.setLightingType(lightingType);
+        device.setSerialNumber(serialNumber);
+        device.setChargeBy(chargeBy);
+        device.setExFactoryDate(exFactoryDate);
+        device.setExpiredDate(expiredDate);
+        return device;
+    }
 }

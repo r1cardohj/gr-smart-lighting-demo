@@ -4,6 +4,7 @@ import org.grsl.models.Device;
 import org.grsl.repositories.DeviceRepository;
 import org.grsl.schema.device.DeviceCreateRequest;
 import org.grsl.schema.device.DeviceIDOnlyRequest;
+import org.grsl.schema.device.DeviceUpdateRequest;
 import org.grsl.schema.http.CommonDataResponse;
 import org.grsl.schema.http.BaseHttpResponse;
 import org.grsl.schema.http.Code200Response;
@@ -54,9 +55,9 @@ public class DeviceManageController {
     }
 
     @PostMapping("/update")
-    public BaseHttpResponse updateDevice(@RequestBody Device device) {
+    public BaseHttpResponse updateDevice(@RequestBody @Validated DeviceUpdateRequest request) {
         try {
-            this.deviceManageService.updateDevice(device);
+            this.deviceManageService.updateDevice(request.toDevice());
         } catch (DeviceRepository.DeviceNotFoundException e) {
             return new Code400Response(e.toString());
         }

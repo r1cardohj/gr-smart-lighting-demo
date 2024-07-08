@@ -1,6 +1,6 @@
 create table device (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
+    name VARCHAR(255) NOT NULL,
     device_Code VARCHAR(255) NOT NULL,
     specifications VARCHAR(1024),
     position VARCHAR(512),
@@ -10,6 +10,34 @@ create table device (
     charge_By VARCHAR(10),
     ex_factory_date DATE,
     expired_date DATE,
+    created_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL
+);
+create table device_group (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description VARCHAR(1024),
+    created_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL
+);
+create table device_device_group(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    device_id INT NOT NULL,
+    device_group_id INT NOT NULL,
+    created_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL
+);
+create table device_history(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    device_id INT NOT NULL,
+    operation INT NOT NULL,
+    remark VARCHAR(1024),
+    created_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+create table device_runtime(
+    device_id INT NOT NULL PRIMARY KEY,
+    brightness DECIMAL NOT NULL,
+    status INT NOT NULL,
     created_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL
 );

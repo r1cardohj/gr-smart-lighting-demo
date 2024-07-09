@@ -3,7 +3,9 @@ package org.grsl.schema.device;
 import lombok.Data;
 import org.grsl.models.Device;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
 import java.util.Date;
 
 @Data

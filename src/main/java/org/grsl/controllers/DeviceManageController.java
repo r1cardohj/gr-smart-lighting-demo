@@ -2,7 +2,7 @@ package org.grsl.controllers;
 
 import org.grsl.models.Device;
 import org.grsl.schema.device.DeviceCreateRequest;
-import org.grsl.schema.device.DeviceIDOnlyRequest;
+import org.grsl.schema.generics.idOnlyRequest;
 import org.grsl.schema.device.DeviceUpdateRequest;
 import org.grsl.schema.http.CommonDataResponse;
 import org.grsl.schema.http.BaseHttpResponse;
@@ -50,7 +50,7 @@ public class DeviceManageController {
     }
 
     @PostMapping("/delete")
-    public BaseHttpResponse deleteDevice(@RequestBody @Validated DeviceIDOnlyRequest request) {
+    public BaseHttpResponse deleteDevice(@RequestBody @Validated idOnlyRequest request) {
         this.deviceManageService.deleteDeviceById(request.getLongId());
         return new Code200Response();
     }

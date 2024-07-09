@@ -26,3 +26,21 @@ VALUES (
     ' aijsfojasoijf1221',
     'a simple light can open'
 );
+INSERT INTO device_group(id, name, description)
+VALUES (
+    null,
+    'lightType',
+    'very good light'
+);
+INSERT INTO device_group(id, name, description)
+VALUES (
+    null,
+    'lightType1',
+    'very good light'
+);
+INSERT INTO device_group(id, name, description)
+VALUES (
+    null,
+    'lightType2',
+    'very good light'
+);

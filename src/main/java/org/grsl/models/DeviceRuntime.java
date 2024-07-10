@@ -6,5 +6,5 @@ import lombok.Data;
 public class DeviceRuntime {
     private String deviceId;
     private Float brightness;
-    private DeviceRuntimeStatus status;
+    private Boolean status;
 }

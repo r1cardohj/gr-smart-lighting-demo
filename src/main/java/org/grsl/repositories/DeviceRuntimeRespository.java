@@ -1,0 +1,25 @@
+package org.grsl.repositories;
+
+import org.grsl.models.DeviceRuntime;
+import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.CrudRepository;
+
+public interface DeviceRuntimeRespository extends CrudRepository<DeviceRuntime, Long> {
+
+    @Query("SELECT * FROM device_runtime WHERE device_id = :deviceId")
+    public DeviceRuntime getDeviceRuntimeByDeviceId(long deviceId);
+
+    class DeviceRuntimeNotFoundException extends RuntimeException {
+        @Override
+        public String toString() {
+            return "The runtime of device is not found.";
+        }
+    }
+
+    class DeviceRuntimeIsExistException extends RuntimeException {
+        @Override
+        public String toString() {
+            return "The runtime of device is exist.";
+        }
+    }
+}

@@ -1,5 +1,5 @@
 package org.grsl.models;
 
 public enum DeviceRuntimeStatus {
-    ON, OFF
+     OFF, ON
 }

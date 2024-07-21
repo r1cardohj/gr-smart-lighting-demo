@@ -11,7 +11,7 @@ public class DeviceManageExceptionAdvice {
     @ExceptionHandler(DeviceRepository.DeviceExistException.class)
     @ResponseBody
     public Code400Response exceptionDeviceExistHandler() {
-        return new Code400Response("Device is exist. operation is valid.");
+        return new Code400Response("Device is exist. operation is invalid.");
     }
 
     @ExceptionHandler(DeviceRepository.DeviceNotFoundException.class)

@@ -35,9 +35,10 @@ create table device_history(
     created_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 create table device_runtime(
-    device_id INT NOT NULL PRIMARY KEY,
-    brightness DECIMAL NOT NULL,
-    isOn BOOLEAN NOT NULL,
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    device_id INT NOT NULL,
+    brightness INT NOT NULL,
+    status INT NOT NULL,
     created_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL
 );

@@ -10,6 +10,7 @@ import java.util.Date;
 public class DeviceUpdateRequest {
 
     @Pattern(regexp = "[0-9]*", message = "id must be number")
+    @NotBlank
     private String id;
     private String name;
     private String deviceCode;

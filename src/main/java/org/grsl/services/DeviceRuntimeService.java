@@ -1,7 +1,6 @@
 package org.grsl.services;
 
 import org.grsl.models.DeviceRuntime;
-import org.grsl.models.DeviceRuntimeStatus;
 import org.grsl.repositories.DeviceRepository;
 import org.grsl.repositories.DeviceRuntimeRespository;
 import org.springframework.stereotype.Service;

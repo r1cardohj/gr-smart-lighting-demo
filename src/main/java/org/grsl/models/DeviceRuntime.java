@@ -3,7 +3,6 @@ package org.grsl.models;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Pattern;
 
 @Data

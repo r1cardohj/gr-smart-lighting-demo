@@ -3,6 +3,7 @@ package org.grsl.controllers;
 
 import org.grsl.models.DeviceGroup;
 import org.grsl.schema.devicegroup.DeviceGroupCreateRequest;
+import org.grsl.schema.devicegroup.DeviceGroupJoinAndLeaveRequest;
 import org.grsl.schema.devicegroup.DeviceGroupUpdateRequest;
 import org.grsl.schema.generics.IDOnlyRequest;
 import org.grsl.schema.http.BaseHttpResponse;
@@ -48,9 +49,19 @@ public class DeviceGroupManageController {
         return new Code200Response();
     }
 
-    @PostMapping("delete")
+    @PostMapping("/delete")
     public BaseHttpResponse deleteDeviceGroup(@RequestBody @Validated IDOnlyRequest request) {
         this.deviceGroupManageService.deleteDeviceGroup(request.getLongId());
         return new Code200Response();
+    }
+
+    @PostMapping("/join")
+    public BaseHttpResponse joinDeviceGroup(@RequestBody @Validated DeviceGroupJoinAndLeaveRequest request) {
+        //todo
+    }
+
+    @PostMapping("/leave")
+    public BaseHttpResponse leaveDeviceGroup(@RequestBody @Validated DeviceGroupJoinAndLeaveRequest request) {
+        //todo
     }
 }

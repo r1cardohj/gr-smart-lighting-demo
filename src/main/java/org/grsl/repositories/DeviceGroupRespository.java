@@ -16,6 +16,7 @@ public interface DeviceGroupRespository extends CrudRepository<DeviceGroup, Long
     @Query("SELECT * FROM device_group WHERE name=:name AND id!=:id")
     public DeviceGroup findSameNameButOtherDeviceGroup(long id, String name);
 
+
     class DeviceGroupNotFoundException extends RuntimeException {
         @Override
         public String toString() {

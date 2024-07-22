@@ -1,11 +1,14 @@
 package org.grsl.services;
 
+import org.grsl.models.DeviceDeviceGroup;
 import org.grsl.models.DeviceGroup;
+import org.grsl.repositories.DeviceDeviceGroupRespository;
 import org.grsl.repositories.DeviceGroupRespository;
 import org.grsl.repositories.DeviceRepository;
 import org.grsl.utils.Pager;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,9 +16,15 @@ import java.util.Optional;
 public class DeviceGroupManageService {
 
     DeviceGroupRespository deviceGroupRespository;
+    DeviceDeviceGroupRespository deviceDeviceGroupRespository;
+    DeviceRepository deviceRepository;
 
-    public DeviceGroupManageService(DeviceGroupRespository deviceGroupRespository) {
+    public DeviceGroupManageService(DeviceGroupRespository deviceGroupRespository,
+                                    DeviceDeviceGroupRespository deviceDeviceGroupRespository,
+                                    DeviceRepository deviceRepository) {
         this.deviceGroupRespository = deviceGroupRespository;
+        this.deviceDeviceGroupRespository = deviceDeviceGroupRespository;
+        this.deviceRepository = deviceRepository;
     }
 
     public DeviceGroup getDeviceGroupById(long id) {
@@ -59,5 +68,39 @@ public class DeviceGroupManageService {
         mergedDeviceGroup.setName(Optional.ofNullable(d2.getName()).orElse(d1.getName()));
         mergedDeviceGroup.setDescription(Optional.ofNullable(d2.getDescription()).orElse(d1.getDescription()));
         return mergedDeviceGroup;
+    }
+
+    public Boolean isDeviceInGroup(long deviceId, long deviceGroupId) {
+        return this.deviceDeviceGroupRespository.findDeviceDeviceGroupByGrpAndDevice(deviceId, deviceGroupId) != null;
+    }
+
+    public void joinDeviceGroup(long deviceGroupId, List<Long> deviceIdSet) {
+        List<DeviceDeviceGroup> DeviceDeviceGroups = new ArrayList<>();
+
+        if (this.deviceGroupRespository.existsById(deviceGroupId))
+            throw new DeviceGroupRespository.DeviceGroupNotFoundException();
+
+        for (Long deviceId : deviceIdSet) {
+            if (!this.deviceRepository.existsById(deviceId))
+                throw new DeviceRepository.DeviceNotFoundException();
+
+            if (this.isDeviceInGroup(deviceId, deviceGroupId))
+                throw new DeviceDeviceGroupRespository.DeviceInGrpAlreadyException();
+
+            DeviceDeviceGroup deviceDeviceGroup = new DeviceDeviceGroup();
+            deviceDeviceGroup.setDeviceId(deviceId);
+            deviceDeviceGroup.setDeviceGroupId(deviceGroupId);
+            DeviceDeviceGroups.add(deviceDeviceGroup);
+        }
+        this.deviceDeviceGroupRespository.saveAll(DeviceDeviceGroups);
+    }
+
+    public void leaveDeviceGroup(long deviceId, long deviceGroupId) {
+        DeviceDeviceGroup deviceDeviceGroup = this.deviceDeviceGroupRespository
+                .findDeviceDeviceGroupByGrpAndDevice(deviceId, deviceGroupId);
+        if (deviceDeviceGroup == null)
+            throw new DeviceDeviceGroupRespository.DeivceNotInGrpExcpetion();
+
+        this.deviceDeviceGroupRespository.delete(deviceDeviceGroup);
     }
 }

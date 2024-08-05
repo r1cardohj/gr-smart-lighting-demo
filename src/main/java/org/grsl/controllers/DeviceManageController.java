@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/device")
+@CrossOrigin(origins = {"http://127.0.0.1:5173", "http://localhost:5173"}, maxAge = 3600)
 public class DeviceManageController {
     private final DeviceManageService deviceManageService;
 

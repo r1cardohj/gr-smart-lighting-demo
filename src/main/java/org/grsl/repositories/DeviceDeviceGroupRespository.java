@@ -1,6 +1,8 @@
 package org.grsl.repositories;
 
+import org.grsl.models.Device;
 import org.grsl.models.DeviceDeviceGroup;
+import org.grsl.models.DeviceGroup;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -12,13 +14,15 @@ public interface DeviceDeviceGroupRespository extends CrudRepository<DeviceDevic
     @Query("SELECT * FROM device_device_group WHERE device_id = :deviceId")
     public List<DeviceDeviceGroup> findDeviceDeviceGroupsByDeviceId(long deviceId);
 
-    @Query("SELECT * FROM device_device_group WHERE device_group = :deviceGroupId")
+    @Query("SELECT * FROM device_device_group WHERE device_group_id = :deviceGroupId")
     public List<DeviceDeviceGroup> findDeviceDeviceGroupsByDeviceGroupId(long deviceGroupId);
 
-    @Query("SELECT * FROM device_device_group WHERE device_group = :deviceGroupId AND device_id = :deviceId")
+    @Query("SELECT * FROM device_device_group WHERE device_group_id = :deviceGroupId AND device_id = :deviceId")
     public DeviceDeviceGroup findDeviceDeviceGroupByGrpAndDevice(long deviceId, long deviceGroupId);
 
-    public class DeviceInGrpAlreadyException extends RuntimeException {}
+    public class DeviceInGrpAlreadyException extends RuntimeException {
+    }
 
-    public class DeivceNotInGrpExcpetion extends RuntimeException {}
+    public class DeivceNotInGrpExcpetion extends RuntimeException {
+    }
 }

@@ -1,9 +1,10 @@
 package org.grsl.controllers;
 
 
+import org.grsl.models.Device;
 import org.grsl.models.DeviceGroup;
 import org.grsl.schema.devicegroup.DeviceGroupCreateRequest;
-import org.grsl.schema.devicegroup.DeviceGroupJoinAndLeaveRequest;
+import org.grsl.schema.devicegroup.DeviceGroupJoinOrLeaveRequest;
 import org.grsl.schema.devicegroup.DeviceGroupUpdateRequest;
 import org.grsl.schema.generics.IDOnlyRequest;
 import org.grsl.schema.http.BaseHttpResponse;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("device/group")
+@CrossOrigin(origins = {"http://127.0.0.1:5173", "http://localhost:5173"})
 public class DeviceGroupManageController {
     private final DeviceGroupManageService deviceGroupManageService;
 
@@ -56,12 +58,27 @@ public class DeviceGroupManageController {
     }
 
     @PostMapping("/join")
-    public BaseHttpResponse joinDeviceGroup(@RequestBody @Validated DeviceGroupJoinAndLeaveRequest request) {
-        //todo
+    public BaseHttpResponse joinDeviceGroup(@RequestBody @Validated DeviceGroupJoinOrLeaveRequest request) {
+        this.deviceGroupManageService.joinDeviceGroup(request.getGroupIdLong(), request.getDeviceIdSet());
+        return new Code200Response();
     }
 
     @PostMapping("/leave")
-    public BaseHttpResponse leaveDeviceGroup(@RequestBody @Validated DeviceGroupJoinAndLeaveRequest request) {
-        //todo
+    public BaseHttpResponse leaveDeviceGroup(@RequestBody @Validated DeviceGroupJoinOrLeaveRequest request) {
+        this.deviceGroupManageService.leaveDeviceGroup(request.getGroupIdLong(), request.getDeviceIdSet());
+        return new Code200Response();
+    }
+
+    @PostMapping("/findByDevice")
+    public BaseHttpResponse getDeviceGroupByDevice(@RequestBody @Validated IDOnlyRequest request) {
+        Iterable<DeviceGroup> deviceGroups = this.deviceGroupManageService.getDeviceGroupByDeviceId(request.getLongId());
+        return new CommonDataResponse<>(deviceGroups);
+    }
+
+    @PostMapping("/findByGroup")
+    public BaseHttpResponse getDeviceByDeviceGroup(@RequestBody @Validated IDOnlyRequest request) {
+        Iterable<Device> devices = this.deviceGroupManageService.getDeviceByDeviceGroupId(request.getLongId());
+
+        return new CommonDataResponse<>(devices);
     }
 }

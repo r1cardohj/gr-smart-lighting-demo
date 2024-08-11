@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/device/runtime")
+@CrossOrigin(origins = {"http://127.0.0.1:5173", "http://localhost:5173"}, maxAge = 3600)
 public class DeviceRuntimeController {
 
     private DeviceRuntimeService deviceRuntimeService;

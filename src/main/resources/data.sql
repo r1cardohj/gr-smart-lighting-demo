@@ -44,3 +44,31 @@ VALUES (
     'lightType2',
     'very good light'
 );
+INSERT INTO device_runtime(id, device_id, brightness, status)
+VALUES (
+    null,
+    1,
+    0,
+    0
+);
+INSERT INTO device_runtime(id, device_id, brightness, status)
+VALUES (
+    null,
+    2,
+    0,
+    0
+);
+INSERT INTO device_runtime(id, device_id, brightness, status)
+VALUES (
+    null,
+    3,
+    0,
+    0
+);
+INSERT INTO device_runtime(id, device_id, brightness, status)
+VALUES (
+    null,
+    4,
+    0,
+    0
+);

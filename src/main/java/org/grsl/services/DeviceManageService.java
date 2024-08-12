@@ -2,7 +2,8 @@ package org.grsl.services;
 
 import org.grsl.models.Device;
 import org.grsl.repositories.DeviceRepository;
-import org.grsl.utils.Pager;
+import org.grsl.utils.Page;
+import org.grsl.utils.Paginator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,9 +21,8 @@ public class DeviceManageService {
         return this.deviceRespository.findById(id).orElseThrow(DeviceRepository.DeviceNotFoundException::new);
     }
 
-    public List<Device> findDeviceByPage(Integer page, Integer perPage) {
-        Pager pager = new Pager(page, perPage);
-        return this.deviceRespository.findAllDeviceByPage(pager.getLimit(), pager.getOffset());
+    public List<Device> findDeviceByPage(Page page) {
+        return this.deviceRespository.findAllDeviceByPage(page.getLimit(), page.getOffset());
     }
 
 
@@ -44,6 +44,10 @@ public class DeviceManageService {
         if (!this.deviceRespository.existsById(id))
             throw new DeviceRepository.DeviceNotFoundException();
         this.deviceRespository.deleteById(id);
+    }
+
+    public long getTotalCount() {
+        return this.deviceRespository.count();
     }
 
     public Device getMergedDevice(Device d1, Device d2) {

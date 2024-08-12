@@ -6,7 +6,8 @@ import org.grsl.models.DeviceGroup;
 import org.grsl.repositories.DeviceDeviceGroupRespository;
 import org.grsl.repositories.DeviceGroupRespository;
 import org.grsl.repositories.DeviceRepository;
-import org.grsl.utils.Pager;
+import org.grsl.utils.Page;
+import org.grsl.utils.Paginator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,9 +36,12 @@ public class DeviceGroupManageService {
                 .orElseThrow(DeviceGroupRespository.DeviceGroupNotFoundException::new);
     }
 
-    public List<DeviceGroup> getDeviceGroupByPage(Integer page, Integer perPage) {
-        Pager pager = new Pager(page, perPage);
-        return this.deviceGroupRespository.findAllDeviceGroupByPage(pager.getLimit(), pager.getOffset());
+    public Long getDeviceGroupTotalCount() {
+        return this.deviceGroupRespository.count();
+    }
+
+    public List<DeviceGroup> getDeviceGroupByPage(Page page) {
+        return this.deviceGroupRespository.findAllDeviceGroupByPage(page.getLimit(), page.getOffset());
     }
 
     public void createDeiveGroup(DeviceGroup deviceGroup) {

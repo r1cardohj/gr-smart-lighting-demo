@@ -7,10 +7,12 @@ import org.grsl.schema.devicegroup.DeviceGroupCreateRequest;
 import org.grsl.schema.devicegroup.DeviceGroupJoinOrLeaveRequest;
 import org.grsl.schema.devicegroup.DeviceGroupUpdateRequest;
 import org.grsl.schema.generics.IDOnlyRequest;
+import org.grsl.schema.generics.PaginationResponse;
 import org.grsl.schema.http.BaseHttpResponse;
 import org.grsl.schema.http.Code200Response;
 import org.grsl.schema.http.CommonDataResponse;
 import org.grsl.services.DeviceGroupManageService;
+import org.grsl.utils.Paginator;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,8 +37,11 @@ public class DeviceGroupManageController {
     @GetMapping("/")
     public BaseHttpResponse getAllDeviceGroup(@RequestParam(required = false) Integer page,
                                               @RequestParam(required = false) Integer perPage) {
-        List<DeviceGroup> deviceGroups = this.deviceGroupManageService.getDeviceGroupByPage(page, perPage);
-        return new CommonDataResponse<>(deviceGroups);
+        Long totalCount = this.deviceGroupManageService.getDeviceGroupTotalCount();
+        Paginator paginator = new Paginator(page, perPage);
+        List<DeviceGroup> deviceGroups = this.deviceGroupManageService.getDeviceGroupByPage(paginator.page());
+
+        return new PaginationResponse<>(deviceGroups, paginator.pagination(totalCount));
     }
 
     @PostMapping("/create")

@@ -1,7 +1,6 @@
 package org.grsl.schema.deviceruntime;
 
 import lombok.Data;
-import org.grsl.schema.generics.IDOnlyRequest;
 
 import javax.validation.constraints.*;
 
@@ -12,7 +11,6 @@ public class AdjustBrightnessRequest {
     private String deviceId;
     @Max(100)
     @Min(0)
-    @NotEmpty
     private Integer brightness;
 
     public Long getLongDeviceId() {

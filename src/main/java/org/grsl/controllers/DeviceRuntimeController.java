@@ -8,18 +8,24 @@ import org.grsl.schema.http.BaseHttpResponse;
 import org.grsl.schema.http.Code200Response;
 import org.grsl.schema.http.CommonDataResponse;
 import org.grsl.services.DeviceRuntimeService;
+import org.grsl.services.SSEManageService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
 
 @RestController
 @RequestMapping("/device/runtime")
 @CrossOrigin(origins = {"http://127.0.0.1:5173", "http://localhost:5173"}, maxAge = 3600)
 public class DeviceRuntimeController {
 
-    private DeviceRuntimeService deviceRuntimeService;
+    private final DeviceRuntimeService deviceRuntimeService;
+    private final SSEManageService sseManageService;
 
-    public  DeviceRuntimeController(DeviceRuntimeService deviceRuntimeService) {
+    public  DeviceRuntimeController(DeviceRuntimeService deviceRuntimeService,
+                                    SSEManageService sseManageService) {
         this.deviceRuntimeService = deviceRuntimeService;
+        this.sseManageService = sseManageService;
     }
 
     @GetMapping("/{deviceId:\\d+}")
@@ -48,18 +54,36 @@ public class DeviceRuntimeController {
     @PostMapping("/control/on")
     public BaseHttpResponse turnOnDevice(@RequestBody @Validated DeviceIdRequest request) {
         this.deviceRuntimeService.turnOnDevice(request.getLongDeviceId());
+        if (this.sseManageService.inSession(request.getDeviceId())) {
+            DeviceRuntime deviceRuntime = this.deviceRuntimeService.getDeviceRuntime(request.getLongDeviceId());
+            this.sseManageService.send(request.getDeviceId(), deviceRuntime);
+        }
         return new Code200Response();
     }
 
     @PostMapping("/control/off")
     public BaseHttpResponse turnOffDevice(@RequestBody @Validated DeviceIdRequest request) {
         this.deviceRuntimeService.turnOffDevice(request.getLongDeviceId());
+        if (this.sseManageService.inSession(request.getDeviceId())) {
+            DeviceRuntime deviceRuntime = this.deviceRuntimeService.getDeviceRuntime(request.getLongDeviceId());
+            this.sseManageService.send(request.getDeviceId(), deviceRuntime);
+        }
         return new Code200Response();
     }
 
     @PostMapping("/control/brightness")
     public BaseHttpResponse adjustBrightness(@RequestBody @Validated AdjustBrightnessRequest request) {
         this.deviceRuntimeService.adjustBrightness(request.getLongDeviceId(), request.getBrightness());
+        if (this.sseManageService.inSession(request.getDeviceId())) {
+            DeviceRuntime deviceRuntime = this.deviceRuntimeService.getDeviceRuntime(request.getLongDeviceId());
+            this.sseManageService.send(request.getDeviceId(), deviceRuntime);
+        }
         return new Code200Response();
     }
+
+    @GetMapping("/control/sse/register/{deviceId:\\d+}")
+    public SseEmitter register(@PathVariable String deviceId) {
+        return this.sseManageService.connect(deviceId);
+    }
+
 }

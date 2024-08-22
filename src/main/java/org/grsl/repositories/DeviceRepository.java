@@ -10,6 +10,8 @@ public interface DeviceRepository extends CrudRepository<Device, Long> {
     @Query("SELECT * FROM device LIMIT :offset,:limit")
     public List<Device> findAllDeviceByPage(int limit, int offset);
 
+    @Query("SELECT count(*) FROM device where is_online = 1")
+    public int getOnlineDeviceCount();
 
     /*
     自定义异常

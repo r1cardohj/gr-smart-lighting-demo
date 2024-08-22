@@ -83,6 +83,10 @@ public class DeviceRuntimeService {
         this.deviceRuntimeRespository.save(deviceRuntime);
     }
 
+    public Integer getStatusOnDeviceCount() {
+        return this.deviceRuntimeRespository.getStatusOnDeviceCount();
+    }
+
     public class ControlInvalidException extends RuntimeException {
         @Override
         public String toString() {

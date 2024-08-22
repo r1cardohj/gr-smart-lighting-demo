@@ -13,6 +13,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/device/runtime")
@@ -49,6 +52,14 @@ public class DeviceRuntimeController {
     public BaseHttpResponse deleteDeviceRuntime(@RequestBody @Validated DeviceIdRequest request) {
         this.deviceRuntimeService.deleteDeviceRuntime(request.getLongDeviceId());
         return new Code200Response();
+    }
+
+    @GetMapping("/countOn")
+    public BaseHttpResponse getStatusOnDeviceCount() {
+        Integer count = this.deviceRuntimeService.getStatusOnDeviceCount();
+        Map<String, Integer> map = new HashMap<>();
+        map.put("count", count);
+        return new CommonDataResponse<>(map);
     }
 
     @PostMapping("/control/on")

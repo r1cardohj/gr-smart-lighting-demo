@@ -9,6 +9,9 @@ public interface DeviceRuntimeRespository extends CrudRepository<DeviceRuntime, 
     @Query("SELECT * FROM device_runtime WHERE device_id = :deviceId")
     public DeviceRuntime getDeviceRuntimeByDeviceId(long deviceId);
 
+    @Query("SELECT count(*) FROM device_runtime WHERE status = 1")
+    public int getStatusOnDeviceCount();
+
     class DeviceRuntimeNotFoundException extends RuntimeException {
         @Override
         public String toString() {

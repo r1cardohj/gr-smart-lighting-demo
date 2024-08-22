@@ -13,7 +13,9 @@ import org.grsl.utils.Paginator;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -59,5 +61,13 @@ public class DeviceManageController {
     public BaseHttpResponse deleteDevice(@RequestBody @Validated IDOnlyRequest request) {
         this.deviceManageService.deleteDeviceById(request.getLongId());
         return new Code200Response();
+    }
+
+    @GetMapping("/countOnline")
+    public BaseHttpResponse getOnlineDeviceCount() {
+        Integer count = this.deviceManageService.getOnlineDeviceCount();
+        Map<String, Integer> map = new HashMap<>();
+        map.put("count", count);
+        return new CommonDataResponse<>(map);
     }
 }

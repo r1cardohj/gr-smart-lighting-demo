@@ -3,33 +3,39 @@ package org.grsl.services;
 import org.grsl.models.Device;
 import org.grsl.repositories.DeviceRepository;
 import org.grsl.utils.Page;
-import org.grsl.utils.Paginator;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class DeviceManageService {
-    private final DeviceRepository deviceRespository;
+    private final DeviceRepository deviceRepository;
+    private final DeviceRuntimeService deviceRuntimeService;
 
-    public DeviceManageService(DeviceRepository deviceRespository) {
-        this.deviceRespository = deviceRespository;
+    public DeviceManageService(DeviceRepository deviceRepository,
+                               DeviceRuntimeService deviceRuntimeService) {
+        this.deviceRepository = deviceRepository;
+        this.deviceRuntimeService = deviceRuntimeService;
     }
 
     public Device findDeviceById(long id) {
-        return this.deviceRespository.findById(id).orElseThrow(DeviceRepository.DeviceNotFoundException::new);
+        return this.deviceRepository.findById(id).orElseThrow(DeviceRepository.DeviceNotFoundException::new);
     }
 
     public List<Device> findDeviceByPage(Page page) {
-        return this.deviceRespository.findAllDeviceByPage(page.getLimit(), page.getOffset());
+        return this.deviceRepository.findAllDeviceByPage(page.getLimit(), page.getOffset());
     }
 
 
+    @Transactional
     public void createDevice(Device device) {
-        if (this.deviceRespository.existsById(device.getId()))
+        if (this.deviceRepository.existsById(device.getId()))
             throw new DeviceRepository.DeviceExistException();
-        this.deviceRespository.save(device);
+
+        this.deviceRepository.save(device);
+        this.deviceRuntimeService.createDeviceRuntime(device.getId());
     }
 
     public void updateDevice(Device device) {
@@ -37,17 +43,19 @@ public class DeviceManageService {
         Device mergedDevice = this.getMergedDevice(baseDevice, device);
         if (mergedDevice.equals(baseDevice))
             return;
-        this.deviceRespository.save(mergedDevice);
+        this.deviceRepository.save(mergedDevice);
     }
 
+    @Transactional
     public void deleteDeviceById(long id) {
-        if (!this.deviceRespository.existsById(id))
+        if (!this.deviceRepository.existsById(id))
             throw new DeviceRepository.DeviceNotFoundException();
-        this.deviceRespository.deleteById(id);
+        this.deviceRepository.deleteById(id);
+        this.deviceRuntimeService.deleteDeviceRuntime(id);
     }
 
     public long getTotalCount() {
-        return this.deviceRespository.count();
+        return this.deviceRepository.count();
     }
 
     public Device getMergedDevice(Device d1, Device d2) {
@@ -64,5 +72,9 @@ public class DeviceManageService {
         mergedDevice.setExFactoryDate(Optional.ofNullable(d2.getExFactoryDate()).orElse(d1.getExFactoryDate()));
         mergedDevice.setExpiredDate(Optional.ofNullable(d2.getExpiredDate()).orElse(d1.getExpiredDate()));
         return mergedDevice;
+    }
+
+    public Integer getOnlineDeviceCount() {
+        return this.deviceRepository.getOnlineDeviceCount();
     }
 }

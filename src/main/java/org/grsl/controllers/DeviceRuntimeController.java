@@ -65,9 +65,9 @@ public class DeviceRuntimeController {
     @PostMapping("/control/on")
     public BaseHttpResponse turnOnDevice(@RequestBody @Validated DeviceIdRequest request) {
         this.deviceRuntimeService.turnOnDevice(request.getLongDeviceId());
-        if (this.sseManageService.inSession(request.getDeviceId())) {
+        if (this.sseManageService.inSession()) {
             DeviceRuntime deviceRuntime = this.deviceRuntimeService.getDeviceRuntime(request.getLongDeviceId());
-            this.sseManageService.send(request.getDeviceId(), deviceRuntime);
+            this.sseManageService.send(deviceRuntime);
         }
         return new Code200Response();
     }
@@ -75,9 +75,9 @@ public class DeviceRuntimeController {
     @PostMapping("/control/off")
     public BaseHttpResponse turnOffDevice(@RequestBody @Validated DeviceIdRequest request) {
         this.deviceRuntimeService.turnOffDevice(request.getLongDeviceId());
-        if (this.sseManageService.inSession(request.getDeviceId())) {
+        if (this.sseManageService.inSession()) {
             DeviceRuntime deviceRuntime = this.deviceRuntimeService.getDeviceRuntime(request.getLongDeviceId());
-            this.sseManageService.send(request.getDeviceId(), deviceRuntime);
+            this.sseManageService.send(deviceRuntime);
         }
         return new Code200Response();
     }
@@ -85,16 +85,16 @@ public class DeviceRuntimeController {
     @PostMapping("/control/brightness")
     public BaseHttpResponse adjustBrightness(@RequestBody @Validated AdjustBrightnessRequest request) {
         this.deviceRuntimeService.adjustBrightness(request.getLongDeviceId(), request.getBrightness());
-        if (this.sseManageService.inSession(request.getDeviceId())) {
+        if (this.sseManageService.inSession()) {
             DeviceRuntime deviceRuntime = this.deviceRuntimeService.getDeviceRuntime(request.getLongDeviceId());
-            this.sseManageService.send(request.getDeviceId(), deviceRuntime);
+            this.sseManageService.send(deviceRuntime);
         }
         return new Code200Response();
     }
 
-    @GetMapping("/control/sse/register/{deviceId:\\d+}")
-    public SseEmitter register(@PathVariable String deviceId) {
-        return this.sseManageService.connect(deviceId);
+    @GetMapping("/control/sse/register/{client:\\d+}")
+    public SseEmitter register(@PathVariable String client) {
+        return this.sseManageService.connect(client);
     }
 
 }

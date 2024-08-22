@@ -4,20 +4,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
 
 @Service
 @Slf4j
 public class SSEManageService {
-    private final Map<String, SseEmitter> sseSession;
 
-    public SSEManageService() {
-        this.sseSession = new ConcurrentHashMap<>();
-    }
+    private SseEmitter sseEmitter;
+
 
     public SseEmitter connect(String clientId) {
-        SseEmitter sseEmitter = new SseEmitter(0L);
+        if (this.inSession())
+            return sseEmitter;
+
+        sseEmitter = new SseEmitter(0L);
         sseEmitter.onCompletion(() -> {
             log.info("client: {} connect is over.", clientId);
         });
@@ -27,23 +27,19 @@ public class SSEManageService {
         sseEmitter.onError((e) -> {
             log.error("client: {} is error.", clientId);
         });
-
-        this.sseSession.put(clientId, sseEmitter);
-
         return sseEmitter;
     }
 
-    public void send(String clientId, Object data) {
-        SseEmitter sseEmitter = this.sseSession.get(clientId);
+    public void send(Object data) {
         try {
             sseEmitter.send(data);
         } catch (Exception ex){
-            log.error("send to client {} error: {}", clientId, ex.toString());
-            this.sseSession.remove(clientId);
+            log.error("send to client error: {}", ex.toString());
+            sseEmitter = null;
         }
     }
 
-    public boolean inSession(String clientId) {
-        return this.sseSession.containsKey(clientId);
+    public boolean inSession() {
+        return this.sseEmitter != null;
     }
 }

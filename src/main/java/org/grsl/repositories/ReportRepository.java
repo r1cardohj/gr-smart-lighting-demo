@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ReportRepository extends CrudRepository<Report, Long> {
+
+    class ReportNotExistException extends RuntimeException {}
 }

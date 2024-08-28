@@ -3,11 +3,10 @@ package org.grsl.services;
 import org.grsl.models.Device;
 import org.grsl.models.DeviceDeviceGroup;
 import org.grsl.models.DeviceGroup;
-import org.grsl.repositories.DeviceDeviceGroupRespository;
-import org.grsl.repositories.DeviceGroupRespository;
+import org.grsl.repositories.DeviceDeviceGroupRepository;
+import org.grsl.repositories.DeviceGroupRepository;
 import org.grsl.repositories.DeviceRepository;
 import org.grsl.utils.Page;
-import org.grsl.utils.Paginator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,54 +18,54 @@ import java.util.stream.Collectors;
 @Service
 public class DeviceGroupManageService {
 
-    DeviceGroupRespository deviceGroupRespository;
-    DeviceDeviceGroupRespository deviceDeviceGroupRespository;
+    DeviceGroupRepository deviceGroupRepository;
+    DeviceDeviceGroupRepository deviceDeviceGroupRepository;
     DeviceRepository deviceRepository;
 
-    public DeviceGroupManageService(DeviceGroupRespository deviceGroupRespository,
-                                    DeviceDeviceGroupRespository deviceDeviceGroupRespository,
+    public DeviceGroupManageService(DeviceGroupRepository deviceGroupRepository,
+                                    DeviceDeviceGroupRepository deviceDeviceGroupRepository,
                                     DeviceRepository deviceRepository) {
-        this.deviceGroupRespository = deviceGroupRespository;
-        this.deviceDeviceGroupRespository = deviceDeviceGroupRespository;
+        this.deviceGroupRepository = deviceGroupRepository;
+        this.deviceDeviceGroupRepository = deviceDeviceGroupRepository;
         this.deviceRepository = deviceRepository;
     }
 
     public DeviceGroup getDeviceGroupById(long id) {
-        return this.deviceGroupRespository.findById(id)
-                .orElseThrow(DeviceGroupRespository.DeviceGroupNotFoundException::new);
+        return this.deviceGroupRepository.findById(id)
+                .orElseThrow(DeviceGroupRepository.DeviceGroupNotFoundException::new);
     }
 
     public Long getDeviceGroupTotalCount() {
-        return this.deviceGroupRespository.count();
+        return this.deviceGroupRepository.count();
     }
 
     public List<DeviceGroup> getDeviceGroupByPage(Page page) {
-        return this.deviceGroupRespository.findAllDeviceGroupByPage(page.getLimit(), page.getOffset());
+        return this.deviceGroupRepository.findAllDeviceGroupByPage(page.getLimit(), page.getOffset());
     }
 
-    public void createDeiveGroup(DeviceGroup deviceGroup) {
-        DeviceGroup deviceGroupExist = this.deviceGroupRespository.findDeviceByName(deviceGroup.getName());
+    public void createDeviceGroup(DeviceGroup deviceGroup) {
+        DeviceGroup deviceGroupExist = this.deviceGroupRepository.findDeviceByName(deviceGroup.getName());
         if (deviceGroupExist != null)
-            throw new DeviceGroupRespository.DeviceGroupNameRepeatException();
-        this.deviceGroupRespository.save(deviceGroup);
+            throw new DeviceGroupRepository.DeviceGroupNameRepeatException();
+        this.deviceGroupRepository.save(deviceGroup);
     }
 
     public void updateDeviceGroup(DeviceGroup deviceGroup) {
         DeviceGroup baseDeviceGroup = this.getDeviceGroupById(deviceGroup.getId());
-        DeviceGroup sameNameDevice = deviceGroupRespository.findSameNameButOtherDeviceGroup(deviceGroup.getId(),
+        DeviceGroup sameNameDevice = deviceGroupRepository.findSameNameButOtherDeviceGroup(deviceGroup.getId(),
                 deviceGroup.getName());
         if (sameNameDevice != null)
-            throw new DeviceGroupRespository.DeviceGroupNameRepeatException();
+            throw new DeviceGroupRepository.DeviceGroupNameRepeatException();
         DeviceGroup merged = this.getMergedDevice(baseDeviceGroup, deviceGroup);
         if (baseDeviceGroup.equals(merged))
             return;
-        this.deviceGroupRespository.save(merged);
+        this.deviceGroupRepository.save(merged);
     }
 
     public void deleteDeviceGroup(long id) {
-        if (!this.deviceGroupRespository.existsById(id))
+        if (!this.deviceGroupRepository.existsById(id))
             throw new DeviceRepository.DeviceNotFoundException();
-        this.deviceGroupRespository.deleteById(id);
+        this.deviceGroupRepository.deleteById(id);
     }
 
     public DeviceGroup getMergedDevice(DeviceGroup d1, DeviceGroup d2) {
@@ -78,54 +77,54 @@ public class DeviceGroupManageService {
     }
 
     public Boolean isDeviceInGroup(long deviceId, long deviceGroupId) {
-        return this.deviceDeviceGroupRespository.findDeviceDeviceGroupByGrpAndDevice(deviceId, deviceGroupId) != null;
+        return this.deviceDeviceGroupRepository.findDeviceDeviceGroupByGrpAndDevice(deviceId, deviceGroupId) != null;
     }
 
     @Transactional
     public void joinDeviceGroup(long deviceGroupId, List<Long> deviceIdSet) {
         List<DeviceDeviceGroup> DeviceDeviceGroups = new ArrayList<>();
 
-        if (!this.deviceGroupRespository.existsById(deviceGroupId))
-            throw new DeviceGroupRespository.DeviceGroupNotFoundException();
+        if (!this.deviceGroupRepository.existsById(deviceGroupId))
+            throw new DeviceGroupRepository.DeviceGroupNotFoundException();
 
         for (Long deviceId : deviceIdSet) {
             if (!this.deviceRepository.existsById(deviceId))
                 throw new DeviceRepository.DeviceNotFoundException();
 
             if (this.isDeviceInGroup(deviceId, deviceGroupId))
-                throw new DeviceDeviceGroupRespository.DeviceInGrpAlreadyException();
+                throw new DeviceDeviceGroupRepository.DeviceInGrpAlreadyException();
 
             DeviceDeviceGroup deviceDeviceGroup = new DeviceDeviceGroup();
             deviceDeviceGroup.setDeviceId(deviceId);
             deviceDeviceGroup.setDeviceGroupId(deviceGroupId);
             DeviceDeviceGroups.add(deviceDeviceGroup);
         }
-        this.deviceDeviceGroupRespository.saveAll(DeviceDeviceGroups);
+        this.deviceDeviceGroupRepository.saveAll(DeviceDeviceGroups);
     }
 
     @Transactional
     public void leaveDeviceGroup(long deviceGroupId, List<Long> deviceIdSet) {
-        if (!this.deviceGroupRespository.existsById(deviceGroupId))
-            throw new DeviceGroupRespository.DeviceGroupNotFoundException();
+        if (!this.deviceGroupRepository.existsById(deviceGroupId))
+            throw new DeviceGroupRepository.DeviceGroupNotFoundException();
 
         for (Long deviceId : deviceIdSet) {
             if (!this.deviceRepository.existsById(deviceId))
                 throw new DeviceRepository.DeviceNotFoundException();
 
             if (!this.isDeviceInGroup(deviceId, deviceGroupId))
-                throw new DeviceDeviceGroupRespository.DeivceNotInGrpExcpetion();
+                throw new DeviceDeviceGroupRepository.DeivceNotInGrpExcpetion();
 
-            DeviceDeviceGroup deviceDeviceGroup = this.deviceDeviceGroupRespository
+            DeviceDeviceGroup deviceDeviceGroup = this.deviceDeviceGroupRepository
                     .findDeviceDeviceGroupByGrpAndDevice(deviceId, deviceGroupId);
 
-            this.deviceDeviceGroupRespository.delete(deviceDeviceGroup);
+            this.deviceDeviceGroupRepository.delete(deviceDeviceGroup);
         }
 
 
     }
 
     public Iterable<DeviceGroup> getDeviceGroupByDeviceId(long deviceId) {
-        List<DeviceDeviceGroup> deviceDeviceGroups = this.deviceDeviceGroupRespository
+        List<DeviceDeviceGroup> deviceDeviceGroups = this.deviceDeviceGroupRepository
                                                         .findDeviceDeviceGroupsByDeviceId(deviceId);
 
         if (deviceDeviceGroups.isEmpty())
@@ -135,11 +134,11 @@ public class DeviceGroupManageService {
                                     .map(DeviceDeviceGroup::getDeviceGroupId)
                                     .collect(Collectors.toList());
 
-        return this.deviceGroupRespository.findAllById(deviceGroupIds);
+        return this.deviceGroupRepository.findAllById(deviceGroupIds);
     }
 
     public Iterable<Device> getDeviceByDeviceGroupId(long deviceGroupId) {
-        List<DeviceDeviceGroup> deviceDeviceGroups = this.deviceDeviceGroupRespository
+        List<DeviceDeviceGroup> deviceDeviceGroups = this.deviceDeviceGroupRepository
                                                         .findDeviceDeviceGroupsByDeviceGroupId(deviceGroupId);
 
         if  (deviceDeviceGroups.isEmpty())

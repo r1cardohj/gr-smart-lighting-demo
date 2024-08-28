@@ -46,7 +46,7 @@ public class DeviceGroupManageController {
 
     @PostMapping("/create")
     public BaseHttpResponse createDeviceGroup(@RequestBody @Validated DeviceGroupCreateRequest request) {
-        this.deviceGroupManageService.createDeiveGroup(request.toDeviceGroup());
+        this.deviceGroupManageService.createDeviceGroup(request.toDeviceGroup());
         return new Code200Response();
     }
 

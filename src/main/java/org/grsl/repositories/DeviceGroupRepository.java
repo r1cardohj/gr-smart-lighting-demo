@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface DeviceGroupRespository extends CrudRepository<DeviceGroup, Long> {
+public interface DeviceGroupRepository extends CrudRepository<DeviceGroup, Long> {
     @Query("SELECT * FROM device_group LIMIT :offset,:limit")
     public List<DeviceGroup> findAllDeviceGroupByPage(int limit, int offset);
 

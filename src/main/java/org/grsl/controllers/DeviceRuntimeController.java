@@ -1,12 +1,14 @@
 package org.grsl.controllers;
 
 
+import org.grsl.models.DeviceLog;
 import org.grsl.models.DeviceRuntime;
 import org.grsl.schema.deviceruntime.AdjustBrightnessRequest;
 import org.grsl.schema.deviceruntime.DeviceIdRequest;
 import org.grsl.schema.http.BaseHttpResponse;
 import org.grsl.schema.http.Code200Response;
 import org.grsl.schema.http.CommonDataResponse;
+import org.grsl.services.DeviceLogService;
 import org.grsl.services.DeviceRuntimeService;
 import org.grsl.services.SSEManageService;
 import org.springframework.validation.annotation.Validated;
@@ -24,11 +26,14 @@ public class DeviceRuntimeController {
 
     private final DeviceRuntimeService deviceRuntimeService;
     private final SSEManageService sseManageService;
+    private final DeviceLogService deviceLogService;
 
     public  DeviceRuntimeController(DeviceRuntimeService deviceRuntimeService,
-                                    SSEManageService sseManageService) {
+                                    SSEManageService sseManageService,
+                                    DeviceLogService deviceLogService) {
         this.deviceRuntimeService = deviceRuntimeService;
         this.sseManageService = sseManageService;
+        this.deviceLogService = deviceLogService;
     }
 
     @GetMapping("/{deviceId:\\d+}")
@@ -69,6 +74,7 @@ public class DeviceRuntimeController {
             DeviceRuntime deviceRuntime = this.deviceRuntimeService.getDeviceRuntime(request.getLongDeviceId());
             this.sseManageService.send(deviceRuntime);
         }
+        this.deviceLogService.log(DeviceLog.on(request.getLongDeviceId()));
         return new Code200Response();
     }
 
@@ -79,6 +85,7 @@ public class DeviceRuntimeController {
             DeviceRuntime deviceRuntime = this.deviceRuntimeService.getDeviceRuntime(request.getLongDeviceId());
             this.sseManageService.send(deviceRuntime);
         }
+        this.deviceLogService.log(DeviceLog.off(request.getLongDeviceId()));
         return new Code200Response();
     }
 
@@ -89,6 +96,8 @@ public class DeviceRuntimeController {
             DeviceRuntime deviceRuntime = this.deviceRuntimeService.getDeviceRuntime(request.getLongDeviceId());
             this.sseManageService.send(deviceRuntime);
         }
+        DeviceLog deviceLog = DeviceLog.chgBrightness(request.getLongDeviceId(), request.getBrightness());
+        this.deviceLogService.log(deviceLog);
         return new Code200Response();
     }
 
@@ -96,5 +105,4 @@ public class DeviceRuntimeController {
     public SseEmitter register(@PathVariable String client) {
         return this.sseManageService.connect(client);
     }
-
 }

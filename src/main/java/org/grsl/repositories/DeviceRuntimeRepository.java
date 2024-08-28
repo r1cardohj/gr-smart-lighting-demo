@@ -4,7 +4,7 @@ import org.grsl.models.DeviceRuntime;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 
-public interface DeviceRuntimeRespository extends CrudRepository<DeviceRuntime, Long> {
+public interface DeviceRuntimeRepository extends CrudRepository<DeviceRuntime, Long> {
 
     @Query("SELECT * FROM device_runtime WHERE device_id = :deviceId")
     public DeviceRuntime getDeviceRuntimeByDeviceId(long deviceId);

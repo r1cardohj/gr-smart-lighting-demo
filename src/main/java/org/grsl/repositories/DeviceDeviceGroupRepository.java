@@ -1,8 +1,6 @@
 package org.grsl.repositories;
 
-import org.grsl.models.Device;
 import org.grsl.models.DeviceDeviceGroup;
-import org.grsl.models.DeviceGroup;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -10,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface DeviceDeviceGroupRespository extends CrudRepository<DeviceDeviceGroup, Long> {
+public interface DeviceDeviceGroupRepository extends CrudRepository<DeviceDeviceGroup, Long> {
     @Query("SELECT * FROM device_device_group WHERE device_id = :deviceId")
     public List<DeviceDeviceGroup> findDeviceDeviceGroupsByDeviceId(long deviceId);
 

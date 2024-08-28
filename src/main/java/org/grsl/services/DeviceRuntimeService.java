@@ -2,18 +2,18 @@ package org.grsl.services;
 
 import org.grsl.models.DeviceRuntime;
 import org.grsl.repositories.DeviceRepository;
-import org.grsl.repositories.DeviceRuntimeRespository;
+import org.grsl.repositories.DeviceRuntimeRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DeviceRuntimeService {
 
-    private final DeviceRuntimeRespository deviceRuntimeRespository;
+    private final DeviceRuntimeRepository deviceRuntimeRepository;
     private final DeviceRepository deviceRepository;
 
-    public DeviceRuntimeService(DeviceRuntimeRespository deviceRuntimeRespository,
+    public DeviceRuntimeService(DeviceRuntimeRepository deviceRuntimeRepository,
                                 DeviceRepository deviceRepository) {
-        this.deviceRuntimeRespository = deviceRuntimeRespository;
+        this.deviceRuntimeRepository = deviceRuntimeRepository;
         this.deviceRepository = deviceRepository;
     }
 
@@ -21,32 +21,32 @@ public class DeviceRuntimeService {
         if (!this.deviceRepository.existsById(deviceId)) {
             throw new DeviceRepository.DeviceNotFoundException();
         }
-        DeviceRuntime existDeviceRuntime = this.deviceRuntimeRespository.getDeviceRuntimeByDeviceId(deviceId);
+        DeviceRuntime existDeviceRuntime = this.deviceRuntimeRepository.getDeviceRuntimeByDeviceId(deviceId);
         if (existDeviceRuntime != null) {
-            throw new DeviceRuntimeRespository.DeviceRuntimeIsExistException();
+            throw new DeviceRuntimeRepository.DeviceRuntimeIsExistException();
         }
         DeviceRuntime newDeviceRuntime = new DeviceRuntime();
         newDeviceRuntime.setDeviceId(deviceId);
         newDeviceRuntime.setBrightness(0);
         newDeviceRuntime.setStatus(0);
-        this.deviceRuntimeRespository.save(newDeviceRuntime);
+        this.deviceRuntimeRepository.save(newDeviceRuntime);
     }
 
     public void deleteDeviceRuntime(long deviceId) {
         DeviceRuntime deviceRuntime = this.getDeviceRuntime(deviceId);
-        this.deviceRuntimeRespository.delete(deviceRuntime);
+        this.deviceRuntimeRepository.delete(deviceRuntime);
     }
 
     public DeviceRuntime getDeviceRuntime(long deviceId) {
-        DeviceRuntime runtime =  this.deviceRuntimeRespository.getDeviceRuntimeByDeviceId(deviceId);
+        DeviceRuntime runtime =  this.deviceRuntimeRepository.getDeviceRuntimeByDeviceId(deviceId);
         if (runtime == null) {
-            throw new DeviceRuntimeRespository.DeviceRuntimeNotFoundException();
+            throw new DeviceRuntimeRepository.DeviceRuntimeNotFoundException();
         }
         return runtime;
     }
 
     public Iterable<DeviceRuntime> getAllDeviceRuntime() {
-        return this.deviceRuntimeRespository.findAll();
+        return this.deviceRuntimeRepository.findAll();
     }
 
 
@@ -57,7 +57,7 @@ public class DeviceRuntimeService {
         }
         deviceRuntime.setBrightness(0);
         deviceRuntime.setStatus(0);
-        this.deviceRuntimeRespository.save(deviceRuntime);
+        this.deviceRuntimeRepository.save(deviceRuntime);
     }
 
     public void turnOnDevice(long deviceId) {
@@ -67,7 +67,7 @@ public class DeviceRuntimeService {
         }
         deviceRuntime.setBrightness(100);
         deviceRuntime.setStatus(1);
-        this.deviceRuntimeRespository.save(deviceRuntime);
+        this.deviceRuntimeRepository.save(deviceRuntime);
     }
 
     public void adjustBrightness(long deviceId, int brightness) {
@@ -80,11 +80,11 @@ public class DeviceRuntimeService {
             throw new ControlInvalidException();
         }
         deviceRuntime.setBrightness(brightness);
-        this.deviceRuntimeRespository.save(deviceRuntime);
+        this.deviceRuntimeRepository.save(deviceRuntime);
     }
 
     public Integer getStatusOnDeviceCount() {
-        return this.deviceRuntimeRespository.getStatusOnDeviceCount();
+        return this.deviceRuntimeRepository.getStatusOnDeviceCount();
     }
 
     public class ControlInvalidException extends RuntimeException {

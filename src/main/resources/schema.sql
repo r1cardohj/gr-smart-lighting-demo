@@ -27,10 +27,10 @@ create table device_device_group(
     created_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL
 );
-create table device_history(
+create table device_log(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     device_id INT NOT NULL,
-    operation INT NOT NULL,
+    operation VARCHAR(512) NOT NULL,
     remark VARCHAR(1024),
     created_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
@@ -42,3 +42,25 @@ create table device_runtime(
     created_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL
 );
+create table device_runtime_snapshot(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    device_id INT NOT NULL,
+    brightness INT NOT NULL,
+    status INT NOT NULL,
+    created_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL
+);
+create table report(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    report_name VARCHAR(512) NOT NULL,
+    created_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    status INT NOT NULL,
+    begin_dt TIMESTAMP NOT NULL,
+    end_dt TIMESTAMP NOT NULL
+);
+create table report_detail(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    report_id INT NOT NULL,
+    device_id INT NOT NULL,
+    use_time DOUBLE NOT NULL
+)

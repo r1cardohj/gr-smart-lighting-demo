@@ -9,5 +9,6 @@ public class ReportDetail {
     private long id;
     private long reportId;
     private long deviceId;
-    private double useTime;
+    private double totalTime;
+    private double avgBrightness;
 }

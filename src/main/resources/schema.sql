@@ -62,5 +62,8 @@ create table report_detail(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     report_id INT NOT NULL,
     device_id INT NOT NULL,
-    use_time DOUBLE NOT NULL
-)
+    total_time DOUBLE NOT NULL,
+    avg_brightness DOUBLE NOT NULL
+    created_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL
+);

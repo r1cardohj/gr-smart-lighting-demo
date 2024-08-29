@@ -1,20 +1,27 @@
 package org.grsl.services;
 
 import org.grsl.models.DeviceRuntime;
+import org.grsl.models.DeviceRuntimeSnapshot;
 import org.grsl.repositories.DeviceRepository;
 import org.grsl.repositories.DeviceRuntimeRepository;
+import org.grsl.repositories.DeviceRuntimeSnapshotRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Service
 public class DeviceRuntimeService {
 
     private final DeviceRuntimeRepository deviceRuntimeRepository;
+    private final DeviceRuntimeSnapshotRepository deviceRuntimeSnapshotRepository;
     private final DeviceRepository deviceRepository;
 
     public DeviceRuntimeService(DeviceRuntimeRepository deviceRuntimeRepository,
-                                DeviceRepository deviceRepository) {
+                                DeviceRepository deviceRepository,
+                                DeviceRuntimeSnapshotRepository deviceRuntimeSnapshotRepository) {
         this.deviceRuntimeRepository = deviceRuntimeRepository;
         this.deviceRepository = deviceRepository;
+        this.deviceRuntimeSnapshotRepository = deviceRuntimeSnapshotRepository;
     }
 
     public void createDeviceRuntime(long deviceId) {
@@ -81,6 +88,18 @@ public class DeviceRuntimeService {
         }
         deviceRuntime.setBrightness(brightness);
         this.deviceRuntimeRepository.save(deviceRuntime);
+    }
+
+    public void backupAll() {
+        Iterable<DeviceRuntime> deviceRuntimes = this.deviceRuntimeRepository.findAll();
+        deviceRuntimes.forEach((elem) -> {
+            DeviceRuntimeSnapshot  snapshot = new DeviceRuntimeSnapshot();
+            snapshot.setDeviceId(elem.getDeviceId());
+            snapshot.setStatus(elem.getStatus());
+            snapshot.setBrightness(elem.getBrightness());
+            snapshot.setCreatedDt(new Date());
+            this.deviceRuntimeSnapshotRepository.save(snapshot);
+        });
     }
 
     public Integer getStatusOnDeviceCount() {

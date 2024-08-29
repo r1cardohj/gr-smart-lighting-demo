@@ -26,13 +26,13 @@ public class ReportGenService {
     }
 
     @Transactional
-    public Report createReport(Date beginDt, Date endDt, List<Long> deviceIds) {
+    public void createReport(Date beginDt, Date endDt, List<Long> deviceIds) {
         Report report = new Report();
         report.setStatus(0);
         report.setBeginDt(beginDt);
         report.setEndDt(endDt);
         report.setCreatedDt(new Date());
-        SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmssZ");
         report.setReportName("rp" + sdf.format(report.getCreatedDt()));
         this.reportRepository.save(report);
 
@@ -44,7 +44,6 @@ public class ReportGenService {
         }).collect(Collectors.toList());
 
         this.reportDetailRepository.saveAll(reportDetails);
-        return report;
     }
 
     public List<ReportDetail> getAllReportDetailByReportId(long reportId) {

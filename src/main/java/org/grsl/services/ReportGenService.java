@@ -4,6 +4,7 @@ import org.grsl.models.Report;
 import org.grsl.models.ReportDetail;
 import org.grsl.repositories.ReportDetailRepository;
 import org.grsl.repositories.ReportRepository;
+import org.grsl.utils.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,5 +58,9 @@ public class ReportGenService {
 
     public long getTotalCount() {
         return this.reportRepository.count();
+    }
+
+    public List<Report> getReportByPage(Page page) {
+        return this.reportRepository.findReportByPage(page.getLimit(), page.getOffset());
     }
 }
